@@ -1,18 +1,17 @@
-import { envelop, useLogger, useSchema, useTiming } from '@envelop/core'
-import { useResponseCache } from '@envelop/response-cache'
-import { createRedisCache } from '@envelop/response-cache-redis'
-
-import Redis from 'ioredis'
-
-import { makeExecutableSchema } from '@graphql-tools/schema'
 import { Handler } from '@netlify/functions'
+
+import { envelop, useLogger, useSchema, useTiming } from '@envelop/core'
+import { makeExecutableSchema } from '@graphql-tools/schema'
 import { getGraphQLParameters, processRequest, Response } from 'graphql-helix'
 
-import delay from 'delay'
+import { useResponseCache } from '@envelop/response-cache'
+import { createRedisCache } from '@envelop/response-cache-redis'
+import Redis from 'ioredis'
+
 import { formatISO9075 } from 'date-fns'
+import delay from 'delay'
 
 const redis = new Redis(process.env.REDIS)
-
 const cache = createRedisCache({ redis })
 
 const schema = makeExecutableSchema({
@@ -64,6 +63,7 @@ export const handler: Handler = async (event) => {
   const { parse, validate, contextFactory, execute, schema } = getEnveloped({
     req: event,
   })
+
   const request = {
     body: JSON.parse(event.body),
     headers: event.headers,
@@ -72,6 +72,7 @@ export const handler: Handler = async (event) => {
   }
 
   const { operationName, query, variables } = getGraphQLParameters(request)
+
   const result = (await processRequest({
     operationName,
     query,
