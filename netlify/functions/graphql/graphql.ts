@@ -11,9 +11,7 @@ import { getGraphQLParameters, processRequest, Response } from 'graphql-helix'
 import delay from 'delay'
 import { formatISO9075 } from 'date-fns'
 
-const redis = new Redis(
-  process.env.REDIS
-)
+const redis = new Redis(process.env.REDIS)
 
 const cache = createRedisCache({ redis })
 
@@ -49,7 +47,15 @@ const getEnveloped = envelop({
     useSchema(schema),
     useLogger(),
     useTiming(),
-    useResponseCache({ cache, ttl: 10000, includeExtensionMetadata: true }),
+    useResponseCache({
+      cache,
+      ttl: 10000,
+      includeExtensionMetadata: true,
+      ttlPerSchemaCoordinate: {
+        // cached execution results that select the `Query.hi` field become stale after 10ms
+        'Query.hi': 10,
+      },
+    }),
   ],
   enableInternalTracing: true,
 })
