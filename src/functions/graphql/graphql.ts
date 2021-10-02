@@ -28,6 +28,11 @@ const schema = makeExecutableSchema({
       body: String!
     }
 
+    input PostUpdate {
+      title: String!
+      body: String
+    }
+
     type Query {
       post(id: Int!): Post!,
       posts: [Post]!,
@@ -38,8 +43,8 @@ const schema = makeExecutableSchema({
     }
 
     type Mutation {
-      updatePost(id: Int!): Post
-      invalidatePost(id: Int!): Post
+      updatePost(id: Int!, input: PostUpdate!): Post
+      invalidatePost(id: Int!): Boolean
     }
   `,
   resolvers: {
@@ -57,9 +62,9 @@ const schema = makeExecutableSchema({
         await delay(7000)
         return formatISO9075(Date.now())
       },
-      post: async (id) => {
+      post: async (root, info, context) => {
         await delay(2000)
-        return { id: 1, title: 'title1', body: 'body1'}
+        return { id: info.id, title: `title${info.id}`, body: `body${info.id}` }
       },
       posts: async () => {
         await delay(2000)
@@ -71,13 +76,14 @@ const schema = makeExecutableSchema({
       },
     },
     Mutation: {
-      updatePost: async ({ id }) => {
+      updatePost: async (root, info, context) => {
         await delay(2000)
-        return { id: 1, title: 'title1', body: 'body1' }
+        return { id: info.id, title: `${info.input.title || 'title'}${info.id}`, body: `${info.body || 'body'}${info.id}` }
       },
-      invalidatePost: async (id) => {
-        await delay(2000)
-        return { id: 3, title: 'title3', body: 'body3' }
+
+      invalidatePost: async (root, info, context) => {
+        await cache.invalidate([{ typename: 'Post', id: info.id }])
+        return true
       },
     },
   },
