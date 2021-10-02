@@ -30,11 +30,11 @@ const schema = makeExecutableSchema({
         return formatISO9075(Date.now())
       },
       quick: async () => {
-        await delay(5)
+        await delay(3500)
         return formatISO9075(Date.now())
       },
       slow: async () => {
-        await delay(9000)
+        await delay(7000)
         return formatISO9075(Date.now())
       },
     },

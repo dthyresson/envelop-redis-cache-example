@@ -27,8 +27,8 @@
 
 - hi - "there"
 - fast - no delay, returns current time
-- quick - 5 seconds delay, returns current time
-- slow - 9 seconds delay, returns current timex
+- quick - 3.5 seconds delay, returns current time
+- slow - 7 seconds delay, returns current timex
 
 ### Invalidation
 
