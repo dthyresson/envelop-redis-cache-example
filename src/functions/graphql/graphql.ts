@@ -97,7 +97,7 @@ const getEnveloped = envelop({
     useTiming(),
     useResponseCache({
       cache,
-      // ttl: 10000,
+      ttl: 60000,
       includeExtensionMetadata: true,
       ttlPerSchemaCoordinate: {
         // cached execution results that select the `Query.hi` field become stale after 10ms
