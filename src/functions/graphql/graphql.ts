@@ -1,19 +1,25 @@
+// Use a Netlify serverless function
 import { Handler } from '@netlify/functions'
 
+// Use a GraphQL Server with Helix + Envelop
 import { envelop, useLogger, useSchema, useTiming } from '@envelop/core'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { getGraphQLParameters, processRequest, Response } from 'graphql-helix'
 
+// Use the Response Cache envelop plugin with a Redis Cache
 import { useResponseCache } from '@envelop/response-cache'
 import { createRedisCache } from '@envelop/response-cache-redis'
+
 import Redis from 'ioredis'
 
 import { formatISO9075 } from 'date-fns'
 import delay from 'delay'
 
+// Create the Redis Cache
 const redis = new Redis(process.env.REDIS)
 const cache = createRedisCache({ redis })
 
+// GraphQL Schema
 const schema = makeExecutableSchema({
   typeDefs: /* GraphQL */ `
     type Query {
@@ -26,6 +32,7 @@ const schema = makeExecutableSchema({
   resolvers: {
     Query: {
       hi: () => 'there',
+      // let's simulate some sluggish queries to demonstrate caching by using delays
       fast: () => {
         return formatISO9075(Date.now())
       },
@@ -41,6 +48,7 @@ const schema = makeExecutableSchema({
   },
 })
 
+// Setup envelop and useful plugins like logging and adding timing traces
 const getEnveloped = envelop({
   plugins: [
     useSchema(schema),
@@ -59,6 +67,7 @@ const getEnveloped = envelop({
   enableInternalTracing: true,
 })
 
+// The function handler is our serverless GraphQL "server"
 export const handler: Handler = async (event) => {
   const { parse, validate, contextFactory, execute, schema } = getEnveloped({
     req: event,
