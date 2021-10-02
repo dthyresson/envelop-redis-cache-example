@@ -22,11 +22,24 @@ const cache = createRedisCache({ redis })
 // GraphQL Schema
 const schema = makeExecutableSchema({
   typeDefs: /* GraphQL */ `
+    type Post {
+      id: Int!
+      title: String!
+      body: String!
+    }
+
     type Query {
+      post(id: Int!): Post!,
+      posts: [Post]!,
       hi: String!
       fast: String!
       quick: String!
       slow: String
+    }
+
+    type Mutation {
+      updatePost(id: Int!): Post
+      invalidatePost(id: Int!): Post
     }
   `,
   resolvers: {
@@ -44,6 +57,28 @@ const schema = makeExecutableSchema({
         await delay(7000)
         return formatISO9075(Date.now())
       },
+      post: async (id) => {
+        await delay(2000)
+        return { id: 1, title: 'title1', body: 'body1'}
+      },
+      posts: async () => {
+        await delay(2000)
+        return [
+          { id: 1, title: 'title1', body: 'body1' },
+          { id: 2, title: 'title2', body: 'body2' },
+          { id: 3, title: 'title3', body: 'body3' },
+        ]
+      },
+    },
+    Mutation: {
+      updatePost: async ({ id }) => {
+        await delay(2000)
+        return { id: 1, title: 'title1', body: 'body1' }
+      },
+      invalidatePost: async (id) => {
+        await delay(2000)
+        return { id: 3, title: 'title3', body: 'body3' }
+      },
     },
   },
 })
@@ -56,7 +91,7 @@ const getEnveloped = envelop({
     useTiming(),
     useResponseCache({
       cache,
-      ttl: 10000,
+      // ttl: 10000,
       includeExtensionMetadata: true,
       ttlPerSchemaCoordinate: {
         // cached execution results that select the `Query.hi` field become stale after 10ms
