@@ -62,9 +62,9 @@ const schema = makeExecutableSchema({
         await delay(7000)
         return formatISO9075(Date.now())
       },
-      post: async (root, info, context) => {
+      post: async (_, { id }) => {
         await delay(2000)
-        return { id: info.id, title: `title${info.id}`, body: `body${info.id}` }
+        return { id: id, title: `title${id}`, body: `body${id}` }
       },
       posts: async () => {
         await delay(2000)
@@ -76,13 +76,12 @@ const schema = makeExecutableSchema({
       },
     },
     Mutation: {
-      updatePost: async (root, info, context) => {
-        await delay(2000)
-        return { id: info.id, title: `${info.input.title || 'title'}${info.id}`, body: `${info.body || 'body'}${info.id}` }
+      updatePost: async (_, { id, input }) => {
+        return { id: id, title: `${input.title || 'title'}${id}`, body: `${input.body || 'body'}${id}` }
       },
 
-      invalidatePost: async (root, info, context) => {
-        await cache.invalidate([{ typename: 'Post', id: info.id }])
+      invalidatePost: async (_, { id }) => {
+        await cache.invalidate([{ typename: 'Post', id: id }])
         return true
       },
     },
