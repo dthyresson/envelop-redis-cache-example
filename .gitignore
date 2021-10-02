@@ -1,4 +1,11 @@
+.DS_Store
 .env
-
-# Local Netlify folder
+.idea
 .netlify
+.vscode/*
+*.icloud
+*.log
+dist
+node_modules
+tmp/
+yarn-error.log

@@ -1,4 +1,15 @@
 {
+  "name": "envelop-redis-cache-example",
+  "version": "0.1.0",
+  "description": "How to use a Redis cache with Envelop Response Cache in a Netlify Serverless GraphQL Function",
+  "main": "index.js",
+  "author": "A. David Thyresson",
+  "scripts": {
+    "build": "netlify build",
+    "dev": "netlify dev",
+    "pretty": "yarn prettier --write .",
+    "serve": "netlify build && netlify dev"
+  },
   "dependencies": {
     "@envelop/core": "^1.2.0",
     "@envelop/response-cache": "^0.2.1",
