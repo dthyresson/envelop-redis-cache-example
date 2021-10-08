@@ -1,7 +1,7 @@
 [build]
   base = "."
   publish = "public/"
- edge_handlers = "src/edge-handlers/"
+  edge_handlers = "src/edge-handlers/"
 
 [functions]
   directory = "src/functions/"    
