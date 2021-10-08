@@ -1,3 +1,3 @@
-export const onRequest = (event) => {
-  console.log(`Incoming request for ${event}`)
+export const onRequest = (_) => {
+  console.log('Incoming request')
 }
