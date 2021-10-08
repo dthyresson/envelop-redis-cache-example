@@ -88,6 +88,8 @@ const schema = makeExecutableSchema({
   },
 })
 
+const EXPIRE_IN_SECONDS = 8
+
 // Setup envelop and useful plugins like logging and adding timing traces
 const getEnveloped = envelop({
   plugins: [
@@ -96,14 +98,14 @@ const getEnveloped = envelop({
     useTiming(),
     useResponseCache({
       cache,
-      ttl: 60000,
+      ttl: EXPIRE_IN_SECONDS * 1000,
       includeExtensionMetadata: true,
       ttlPerSchemaCoordinate: {
         // cached execution results that select the `Query.hi` field become stale after 10ms
         'Query.hi': 0,
-        'Query.fast': 10000,
-        'Query.quick': 10000,
-        'Query.slow': 10000,
+        'Query.fast': EXPIRE_IN_SECONDS * 1000,
+        'Query.quick': EXPIRE_IN_SECONDS * 1000,
+        'Query.slow': EXPIRE_IN_SECONDS * 1000,
       },
     }),
   ],
