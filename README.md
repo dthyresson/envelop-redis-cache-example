@@ -9,6 +9,7 @@
 - netlify init
 - netlify build
 - netlify dev
+- netlify dev --edgeHandlers
 
 ### Use Insomnia
 
