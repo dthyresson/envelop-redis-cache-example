@@ -3,6 +3,11 @@
   publish = "public/"
   edge_handlers = "src/edge-handlers/"
 
+[dev]
+  port = 8889
+  autoLaunch = false
+  framework = "#static"
+
 [functions]
   directory = "src/functions/"    
 
