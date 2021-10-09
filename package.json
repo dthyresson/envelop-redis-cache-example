@@ -1,0 +1,38 @@
+{
+  "name": "envelop-redis-cache-example",
+  "version": "0.1.0",
+  "description": "How to use a Redis cache with Envelop Response Cache in a Netlify Serverless GraphQL Function",
+  "main": "index.js",
+  "author": "A. David Thyresson",
+  "scripts": {
+    "build": "netlify build",
+    "dev": "netlify dev",
+    "pretty": "yarn prettier --write .",
+    "serve": "netlify build && netlify dev"
+  },
+  "dependencies": {
+    "@envelop/core": "^1.2.0",
+    "@envelop/response-cache": "^0.2.1",
+    "@envelop/response-cache-redis": "^0.1.0",
+    "@graphql-tools/schema": "^8.2.0",
+    "@netlify/functions": "^0.7.2",
+    "@types/node": "^14.17.20",
+    "date-fns": "^2.24.0",
+    "delay": "^5.0.0",
+    "graphql": "^15.6.0",
+    "graphql-helix": "1.7.0",
+    "ioredis": "^4.27.9",
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "prettier": "2.4.1"
+  }
+}
