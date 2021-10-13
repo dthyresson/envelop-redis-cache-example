@@ -13,11 +13,19 @@ import jsonStableStringify from 'fast-json-stable-stringify'
 
 // const { createHash } = import('crypto')
 
-const buildResponseCacheKey = params => crypto.createHash('sha1').update([params.documentString,
-  params.operationName ?? '',
-  jsonStableStringify(params.variableValues ?? {}),
-  params.sessionId ?? '',
-].join('|')).digest('base64')
+const buildResponseCacheKey = (params) => {
+  console.debug({ params }, 'buildResponseCacheKey params')
+
+  const tokens = [params.documentString,
+    params.operationName ?? '',
+    jsonStableStringify(params.variableValues ?? {}),
+    params.sessionId ?? '',
+  ].join('|')
+
+  console.debug({ tokens }, 'buildResponseCacheKey tokens')
+
+  return crypto.createHash('sha1').update(tokens).digest('base64')
+}
 
 export const onRequest = (event) => {
   console.info(`incoming request for ${event.requestMeta.url.pathname}`)
@@ -34,7 +42,7 @@ export const onRequest = (event) => {
     while (read) {
       const chunk = await reader.read()
 
-      console.debug(chunk, `chunk for ${event.requestMeta.url.pathname}`)
+      // console.debug(chunk, `chunk for ${event.requestMeta.url.pathname}`)
 
       if (!chunk.done) {
         console.debug('trying to decode...')
@@ -69,9 +77,9 @@ export const onRequest = (event) => {
       query: event.requestMeta.url,
     }
 
-    console.debug(payload, `payload for ${event.requestMeta.url.pathname}`)
+    // console.debug(payload, `payload for ${event.requestMeta.url.pathname}`)
 
-    console.debug({ params }, `GraphQL Parameters for ${event.requestMeta.url.pathname}`)
+    // console.debug({ params }, `GraphQL Parameters for ${event.requestMeta.url.pathname}`)
 
     try {
       const cacheKey = buildResponseCacheKey(params)
