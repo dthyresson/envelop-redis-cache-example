@@ -24,7 +24,7 @@ export const onRequest = (event) => {
     console.log(url, `url for ${event.requestMeta.url.pathname}`)
 
     const payload = {
-      // body: request?.body,
+      body: request?.body,
       headers: event.requestMeta.headers,
       method: event.requestMeta.method,
       query: event.requestMeta.url,
