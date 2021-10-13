@@ -1,6 +1,5 @@
+import crypto from 'crypto'
 import jsonStableStringify from 'fast-json-stable-stringify'
-
-// const crypto = require('crypto')
 
 /**
  * Default function used for building the response cache key.
@@ -12,11 +11,11 @@ import jsonStableStringify from 'fast-json-stable-stringify'
 //   // params.sessionId ?? '',
 // ].join('|')).digest('base64')
 
-const buildResponseCacheKey = params => [params.documentString,
+const buildResponseCacheKey = params => crypto.createHash('sha1').update([params.documentString,
   params.operationName ?? '',
   jsonStableStringify(params.variableValues ?? {}),
   params.sessionId ?? '',
-].join('|')
+].join('|')).digest('base64')
 
 export const onRequest = (event) => {
   console.info(`incoming request for ${event.requestMeta.url.pathname}`)
