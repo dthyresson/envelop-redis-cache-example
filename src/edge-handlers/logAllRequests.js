@@ -78,12 +78,20 @@ export const onRequest = (event) => {
           Authorization: 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
         }
       }).then(response => response.json())
-        .then(data => console.debug(data, `cachedResult for ${cacheKey}`))
+        .then(data => {
+          console.debug(data, `cachedResult for ${cacheKey}`)
+
+          if (data?.result) {
+            console.debug(`+++ Found for for ${cacheKey}.`)
+            return new Response(data.result)
+          } else {
+            console.debug(`!!! No cachedResult found for ${cacheKey}. Make GraphQL request.`)
+            return fetch(url, { body: payload.body, headers: payload.headers, method: 'POST' })
+          }
+        })
     } catch (error) {
       console.error(error, 'Failed to make cache key')
       console.error(error.message)
     }
-
-    return fetch(url, { body: payload.body, headers: payload.headers, method: 'POST' })
   })
 }
