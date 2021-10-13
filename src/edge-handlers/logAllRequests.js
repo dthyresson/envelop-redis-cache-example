@@ -1,4 +1,4 @@
-import { getGraphQLParameters } from 'graphql-helix'
+// import { getGraphQLParameters } from 'graphql-helix'
 
 // import jsonStableStringify from 'fast-json-stable-stringify'
 
@@ -43,8 +43,18 @@ export const onRequest = (event) => {
 
     const url = new URL(request.url)
 
+    let operationName
+    let query
+    let variables
+
+    if (event.requestMeta.method === 'POST') {
+      operationName = body?.operationName
+      query = body?.query
+      variables = body?.variables
+    }
+
     const payload = {
-      body: JSON.parse(body || {}),
+      body,
       headers: event.requestMeta.headers,
       method: event.requestMeta.method,
       query: event.requestMeta.url,
@@ -52,9 +62,7 @@ export const onRequest = (event) => {
 
     console.log(payload, `payload for ${event.requestMeta.url.pathname}`)
 
-    const { operationName, query, variables } = getGraphQLParameters(payload)
-
-    console.log({ operationName, query, variables }, `getGraphQLParameters for ${event.requestMeta.url.pathname}`)
+    console.log({ operationName, query, variables }, `GraphQL Parameters for ${event.requestMeta.url.pathname}`)
 
     return fetch(url, { body: payload.body, headers: payload.headers, method: 'POST' })
   })
