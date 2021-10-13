@@ -73,13 +73,12 @@ export const onRequest = (event) => {
       console.debug(cacheKey, `cacheKey for ${event.requestMeta.url.pathname}`)
 
       // readonly redis fetch
-      const cachedResult = fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
+      fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
         headers: {
           Authorization: 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
         }
-      })
-
-      console.debug(cachedResult, `cachedResult for ${cacheKey}`)
+      }).then(response => response.json())
+        .then(data => console.debug(data, `cachedResult for ${cacheKey}`))
     } catch (error) {
       console.error(error, 'Failed to make cache key')
       console.error(error.message)
