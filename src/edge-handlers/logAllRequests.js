@@ -33,7 +33,7 @@ export const onRequest = (event) => {
 
       if (chunk) {
         console.log('trying to decode...')
-        body += decoder.decode(chunk, { stream: true })
+        body += decoder.decode(chunk)
       } else {
         read = false
       }
