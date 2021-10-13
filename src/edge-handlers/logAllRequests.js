@@ -1,5 +1,5 @@
 import { envelop } from '@envelop/core'
-import { getGraphQLParameters } from 'graphql-helix'
+// import { getGraphQLParameters } from 'graphql-helix'
 
 // import jsonStableStringify from 'fast-json-stable-stringify'
 
@@ -35,9 +35,9 @@ export const onRequest = (event) => {
 
   console.log(request, `build request for ${event.requestMeta.url.pathname}`)
 
-  const { operationName, query, variables } = getGraphQLParameters(request)
+  // const { operationName, query, variables } = getGraphQLParameters(request)
 
-  console.log({ operationName, query, variables }, `incoming request for ${event.requestMeta.url.pathname}`)
+  // console.log({ operationName, query, variables }, `incoming request for ${event.requestMeta.url.pathname}`)
 
   console.log(contextFactory?.documentString, `incoming contextFactory for ${event.requestMeta.url.pathname}`)
 
