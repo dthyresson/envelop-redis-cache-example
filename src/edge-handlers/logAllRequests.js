@@ -18,7 +18,7 @@
 export const onRequest = (event) => {
   console.log(`incoming request for ${event.requestMeta.url.pathname}`)
 
-  event.replaceResponse(({ request }) => {
+  event.replaceResponse(async ({ request }) => {
     console.log(request.url, `url for ${event.requestMeta.url.pathname}`)
 
     const rawBody = request.body
@@ -27,7 +27,7 @@ export const onRequest = (event) => {
     let body = ''
     const reader = rawBody.getReader()
     while (read) {
-      const chunk = reader.read()
+      const chunk = await reader.read()
       if (chunk) {
         body += decoder.decode(chunk, { stream: true })
       } else {
