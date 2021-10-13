@@ -1,3 +1,3 @@
-export function onRequest(event) {
-  console.log(`incoming request for ${event.requestMeta.url.pathname}`);
+export const onRequest = (event) => {
+  console.log(`incoming request for ${event.requestMeta.url.pathname}`)
 }
