@@ -16,22 +16,27 @@ import { getGraphQLParameters } from 'graphql-helix'
 // ].join('|')).digest('base64')
 
 export const onRequest = (event) => {
+  console.log(`incoming request for ${event.requestMeta.url.pathname}`)
+
   const getEnveloped = envelop({})
 
   const { contextFactory } = getEnveloped({
     req: event,
   })
 
+  console.log(`getEnveloped for ${event.requestMeta.url.pathname}`)
+
   const request = {
-    body: JSON.parse(event.body),
+    body: JSON.parse(event?.body || ''),
     headers: event.requestMeta.headers,
     method: event.requestMeta.method,
     query: event.requestMeta.url,
   }
 
+  console.log(request, `build request for ${event.requestMeta.url.pathname}`)
+
   const { operationName, query, variables } = getGraphQLParameters(request)
 
-  console.log(`incoming request for ${event.requestMeta.url.pathname}`)
   console.log({ operationName, query, variables }, `incoming request for ${event.requestMeta.url.pathname}`)
 
   console.log(contextFactory?.documentString, `incoming contextFactory for ${event.requestMeta.url.pathname}`)
