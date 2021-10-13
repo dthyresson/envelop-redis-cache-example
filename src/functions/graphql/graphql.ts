@@ -88,7 +88,7 @@ const schema = makeExecutableSchema({
   },
 })
 
-const EXPIRE_IN_SECONDS = 8
+const EXPIRE_IN_SECONDS = 300
 
 // Setup envelop and useful plugins like logging and adding timing traces
 const getEnveloped = envelop({

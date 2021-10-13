@@ -1,6 +1,9 @@
 import SHA1 from 'crypto-js/sha1'
 import Base64 from 'crypto-js/enc-base64'
 import jsonStableStringify from 'fast-json-stable-stringify'
+import Redis from 'ioredis'
+
+const redis = new Redis(process.env.REDIS)
 
 /**
  * Default function used for building the response cache key.
@@ -86,6 +89,10 @@ export const onRequest = (event) => {
     try {
       const cacheKey = buildResponseCacheKey(params)
       console.debug(cacheKey, `cacheKey for ${event.requestMeta.url.pathname}`)
+
+      const cachedResult = redis.get(cacheKey)
+
+      console.debug(cachedResult, `cachedResult for ${cacheKey}`)
     } catch (error) {
       console.error(error, 'Failed to make cache key')
       console.error(error.message)
