@@ -31,9 +31,9 @@ export const onRequest = (event) => {
 
       console.log(chunk, `chunk for ${event.requestMeta.url.pathname}`)
 
-      if (chunk) {
+      if (!chunk.done) {
         console.log('trying to decode...')
-        body += decoder.decode(chunk)
+        body += decoder.decode(chunk.value)
       } else {
         read = false
       }
