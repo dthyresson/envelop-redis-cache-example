@@ -43,14 +43,17 @@ export const onRequest = (event) => {
 
     const url = new URL(request.url)
 
-    let operationName
-    let query
-    let variables
+    const params = {
+      documentString: undefined,
+      operationName: undefined,
+      variableValues: undefined,
+      sessionId: undefined
+    }
 
     if (event.requestMeta.method === 'POST') {
-      operationName = body?.operationName
-      query = body?.query
-      variables = body?.variables
+      params.operationName = body?.operationName
+      params.documentString = body?.query
+      params.variableValues = body?.variables
     }
 
     const payload = {
@@ -62,7 +65,7 @@ export const onRequest = (event) => {
 
     console.log(payload, `payload for ${event.requestMeta.url.pathname}`)
 
-    console.log({ operationName, query, variables }, `GraphQL Parameters for ${event.requestMeta.url.pathname}`)
+    console.log({ params }, `GraphQL Parameters for ${event.requestMeta.url.pathname}`)
 
     return fetch(url, { body: payload.body, headers: payload.headers, method: 'POST' })
   })
