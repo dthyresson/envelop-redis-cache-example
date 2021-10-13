@@ -1,4 +1,3 @@
-import crypto from 'crypto'
 import jsonStableStringify from 'fast-json-stable-stringify'
 
 /**
@@ -11,7 +10,9 @@ import jsonStableStringify from 'fast-json-stable-stringify'
 //   // params.sessionId ?? '',
 // ].join('|')).digest('base64')
 
-const buildResponseCacheKey = params => crypto.createHash('sha1').update([params.documentString,
+const { createHash } = await import('crypto')
+
+const buildResponseCacheKey = params => createHash('sha1').update([params.documentString,
   params.operationName ?? '',
   jsonStableStringify(params.variableValues ?? {}),
   params.sessionId ?? '',
