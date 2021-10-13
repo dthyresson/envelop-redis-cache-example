@@ -82,7 +82,17 @@ export const onRequest = (event) => {
           console.debug(data, `cachedResult for ${cacheKey}`)
 
           if (data?.result) {
-            console.debug(data.result, `+++ Found for ${cacheKey}.`)
+            const r = data.result
+            const responseResult = {
+              ...r,
+              extensions: {
+                responseEdgeCache: {
+                  hit: true
+                }
+              }
+            }
+
+            console.debug(responseResult, `+++ Found for ${cacheKey}.`)
             return new Response(data.result, { method: 'POST', status: 200 })
           } else {
             console.debug(`!!! No cachedResult found for ${cacheKey}. Make GraphQL request.`)
