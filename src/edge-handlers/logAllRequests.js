@@ -1,4 +1,4 @@
-import * as crypto from 'crypto'
+
 import jsonStableStringify from 'fast-json-stable-stringify'
 
 /**
@@ -12,6 +12,8 @@ import jsonStableStringify from 'fast-json-stable-stringify'
 // ].join('|')).digest('base64')
 
 // const { createHash } = import('crypto')
+
+const crypto = require('crypto')
 
 const buildResponseCacheKey = (params) => {
   console.debug({ params }, 'buildResponseCacheKey params')
