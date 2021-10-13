@@ -1,9 +1,6 @@
 import SHA1 from 'crypto-js/sha1'
 import Base64 from 'crypto-js/enc-base64'
 import jsonStableStringify from 'fast-json-stable-stringify'
-import Redis from 'ioredis'
-
-const redis = new Redis('rediss://:cb3cc740a421404b8a27474f061e6150@us1-sweet-anteater-34871.upstash.io:34871')
 
 /**
  * Default function used for building the response cache key.
@@ -90,7 +87,11 @@ export const onRequest = (event) => {
       const cacheKey = buildResponseCacheKey(params)
       console.debug(cacheKey, `cacheKey for ${event.requestMeta.url.pathname}`)
 
-      const cachedResult = redis.get(cacheKey)
+      const cachedResult = await fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
+        headers: {
+          Authorization: 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
+        }
+      })
 
       console.debug(cachedResult, `cachedResult for ${cacheKey}`)
     } catch (error) {
