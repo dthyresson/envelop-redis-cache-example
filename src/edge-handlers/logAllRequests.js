@@ -1,4 +1,3 @@
-
 import jsonStableStringify from 'fast-json-stable-stringify'
 
 /**
@@ -13,7 +12,6 @@ import jsonStableStringify from 'fast-json-stable-stringify'
 
 // const { createHash } = import('crypto')
 
-const crypto = require('crypto')
 
 const buildResponseCacheKey = (params) => {
   console.debug({ params }, 'buildResponseCacheKey params')
@@ -26,7 +24,7 @@ const buildResponseCacheKey = (params) => {
 
   console.debug({ tokens }, 'buildResponseCacheKey tokens')
 
-  return crypto.createHash('sha1').update(tokens).digest('base64')
+  return require('crypto').createHash('sha1').update(tokens).digest('base64')
 }
 
 export const onRequest = (event) => {
