@@ -1,4 +1,4 @@
-import jsonStableStringify from 'fast-json-stable-stringify'
+// import jsonStableStringify from 'fast-json-stable-stringify'
 
 // const crypto = require('crypto')
 
@@ -14,7 +14,7 @@ import jsonStableStringify from 'fast-json-stable-stringify'
 
 export const onRequest = (event) => {
   console.log(`incoming request for ${event.requestMeta.url.pathname}`)
-  console.log(jsonStableStringify(event), `incoming event for ${event.requestMeta.url.pathname}`)
-  console.log(jsonStableStringify(event.context), `incoming event.context for ${event.requestMeta.url.pathname}`)
+  console.log(event), `incoming event for ${event.requestMeta.url.pathname}`)
+  console.log(event.context, `incoming event.context for ${event.requestMeta.url.pathname}`)
   // console.log(buildResponseCacheKey(event), `buildResponseCacheKey for ${event.requestMeta.url.pathname}`)
 }
