@@ -20,7 +20,7 @@ export const onRequest = (event) => {
 
   event.replaceResponse(({ request }) => {
     const payload = {
-      body: request?.body && JSON.parse(request?.body || {}),
+      body: request?.body,
       headers: event.requestMeta.headers,
       method: event.requestMeta.method,
       query: event.requestMeta.url,
