@@ -28,7 +28,11 @@ export const onRequest = (event) => {
     const reader = rawBody.getReader()
     while (read) {
       const chunk = await reader.read()
+
+      console.log(chunk, `chunk for ${event.requestMeta.url.pathname}`)
+
       if (chunk) {
+        console.log('trying to decode...')
         body += decoder.decode(chunk, { stream: true })
       } else {
         read = false
