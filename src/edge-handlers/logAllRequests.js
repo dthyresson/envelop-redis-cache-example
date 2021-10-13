@@ -44,7 +44,7 @@ export const onRequest = (event) => {
     const url = new URL(request.url)
 
     const payload = {
-      body,
+      body: JSON.parse(body || {}),
       headers: event.requestMeta.headers,
       method: event.requestMeta.method,
       query: event.requestMeta.url,
