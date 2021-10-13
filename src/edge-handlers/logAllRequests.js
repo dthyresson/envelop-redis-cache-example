@@ -18,18 +18,15 @@
 export const onRequest = (event) => {
   console.log(`incoming request for ${event.requestMeta.url.pathname}`)
 
-  const request = {
-    body: event?.body && JSON.parse(event?.body || {}),
-    headers: event.requestMeta.headers,
-    method: event.requestMeta.method,
-    query: event.requestMeta.url,
-  }
+  event.replaceResponse(({ request }) => {
+    const payload = {
+      body: request?.body && JSON.parse(request?.body || {}),
+      headers: event.requestMeta.headers,
+      method: event.requestMeta.method,
+      query: event.requestMeta.url,
+    }
+    console.log(payload, `payload for ${event.requestMeta.url.pathname}`)
 
-  console.log(request, `build request for ${event.requestMeta.url.pathname}`)
-
-  // const { operationName, query, variables } = getGraphQLParameters(request)
-
-  // console.log({ operationName, query, variables }, `incoming request for ${event.requestMeta.url.pathname}`)
-
-  // console.log(buildResponseCacheKey(event), `buildResponseCacheKey for ${event.requestMeta.url.pathname}`)
+    fetch(request)
+  })
 }
