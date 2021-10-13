@@ -27,6 +27,6 @@ export const onRequest = (event) => {
     }
     console.log(payload, `payload for ${event.requestMeta.url.pathname}`)
 
-    fetch(request)
+    return fetch(request)
   })
 }
