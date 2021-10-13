@@ -23,7 +23,19 @@ export const onRequest = (event) => {
 
     const rawBody = request.body
     const decoder = new TextDecoder()
-    const body = decoder.decode(rawBody)
+    let read = true
+    let body = ''
+    while (read) {
+      const chunk = await rawBody.getReader().read()
+      if (chunk) {
+        body += decoder.decode(chunk, { stream: true })
+      } else {
+        read = false
+      }
+    }
+
+    body += decoder.decode()
+
     const url = new URL(request.url)
 
     const payload = {
