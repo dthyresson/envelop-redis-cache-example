@@ -83,7 +83,7 @@ export const onRequest = (event) => {
 
           if (data?.result) {
             console.debug(`+++ Found for for ${cacheKey}.`)
-            return new Response(data.result)
+            return new Response(data.result, { method: 'POST', status: '200' })
           } else {
             console.debug(`!!! No cachedResult found for ${cacheKey}. Make GraphQL request.`)
             return fetch(url, { body: payload.body, headers: payload.headers, method: 'POST' })
