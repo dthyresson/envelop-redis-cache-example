@@ -1,4 +1,4 @@
-import { envelop } from '@envelop/core'
+// import { envelop } from '@envelop/core'
 // import { getGraphQLParameters } from 'graphql-helix'
 
 // import jsonStableStringify from 'fast-json-stable-stringify'
@@ -18,14 +18,6 @@ import { envelop } from '@envelop/core'
 export const onRequest = (event) => {
   console.log(`incoming request for ${event.requestMeta.url.pathname}`)
 
-  const getEnveloped = envelop({})
-
-  const { contextFactory } = getEnveloped({
-    req: event,
-  })
-
-  console.log(`getEnveloped for ${event.requestMeta.url.pathname}`)
-
   const request = {
     body: JSON.parse(event?.body || ''),
     headers: event.requestMeta.headers,
@@ -38,8 +30,6 @@ export const onRequest = (event) => {
   // const { operationName, query, variables } = getGraphQLParameters(request)
 
   // console.log({ operationName, query, variables }, `incoming request for ${event.requestMeta.url.pathname}`)
-
-  console.log(contextFactory?.documentString, `incoming contextFactory for ${event.requestMeta.url.pathname}`)
 
   // console.log(buildResponseCacheKey(event), `buildResponseCacheKey for ${event.requestMeta.url.pathname}`)
 }
