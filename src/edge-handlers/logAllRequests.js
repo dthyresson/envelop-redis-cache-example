@@ -25,8 +25,9 @@ export const onRequest = (event) => {
     const decoder = new TextDecoder()
     let read = true
     let body = ''
+    const reader = rawBody.getReader()
     while (read) {
-      const chunk = await rawBody.getReader().read()
+      const chunk = reader.read()
       if (chunk) {
         body += decoder.decode(chunk, { stream: true })
       } else {
