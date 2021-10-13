@@ -1,8 +1,6 @@
-// import { getGraphQLParameters } from 'graphql-helix'
-
 import jsonStableStringify from 'fast-json-stable-stringify'
 
-// const crypto = require('crypto')
+const crypto = require('crypto')
 
 /**
  * Default function used for building the response cache key.
