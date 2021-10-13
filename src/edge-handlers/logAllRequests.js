@@ -19,7 +19,7 @@ export const onRequest = (event) => {
   console.log(`incoming request for ${event.requestMeta.url.pathname}`)
 
   const request = {
-    body: JSON.parse(event?.body || ''),
+    body: event?.body && JSON.parse(event?.body || {}),
     headers: event.requestMeta.headers,
     method: event.requestMeta.method,
     query: event.requestMeta.url,
