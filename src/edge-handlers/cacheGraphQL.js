@@ -82,7 +82,7 @@ export const onRequest = (event) => {
           console.debug(data, `cachedResult for ${cacheKey}`)
 
           if (data?.result) {
-            const r = data.result
+            const r = JSON.parse(data.result)
             const responseResult = {
               ...r,
               extensions: {
@@ -92,8 +92,8 @@ export const onRequest = (event) => {
               }
             }
 
-            console.debug(responseResult, `+++ Found for ${cacheKey}.`)
-            return new Response(responseResult, { method: 'POST', status: 200 })
+            console.debug(jsonStableStringify(responseResult), `+++ Found for ${cacheKey}.`)
+            return new Response(jsonStableStringify(responseResult), { method: 'POST', status: 200 })
           } else {
             console.debug(`!!! No cachedResult found for ${cacheKey}. Make GraphQL request.`)
             return fetch(url, { body: payload.body, headers: payload.headers, method: 'POST' })
