@@ -6,15 +6,6 @@ import jsonStableStringify from 'fast-json-stable-stringify'
  * Default function used for building the response cache key.
  * It is exported here for advanced use-cases. E.g. if you want to short circuit and serve responses from the cache on a global level in order to completely by-pass the GraphQL flow.
  */
-// const buildResponseCacheKey = params => crypto.createHash('sha1').update([params.documentString,
-//   // params.operationName ?? '',
-//   // jsonStableStringify(params.variableValues ?? {}),
-//   // params.sessionId ?? '',
-// ].join('|')).digest('base64')
-
-// const { createHash } = import('crypto')
-
-
 const buildResponseCacheKey = (params) => {
   console.debug({ params }, 'buildResponseCacheKey params')
 
@@ -43,8 +34,6 @@ export const onRequest = (event) => {
 
     while (read) {
       const chunk = await reader.read()
-
-      // console.debug(chunk, `chunk for ${event.requestMeta.url.pathname}`)
 
       if (!chunk.done) {
         console.debug('trying to decode...')
@@ -79,15 +68,12 @@ export const onRequest = (event) => {
       query: event.requestMeta.url,
     }
 
-    // console.debug(payload, `payload for ${event.requestMeta.url.pathname}`)
-
-    // console.debug({ params }, `GraphQL Parameters for ${event.requestMeta.url.pathname}`)
-
     try {
       const cacheKey = buildResponseCacheKey(params)
       console.debug(cacheKey, `cacheKey for ${event.requestMeta.url.pathname}`)
 
-      const cachedResult = await fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
+      // readonly redis fetch
+      const cachedResult = fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
         headers: {
           Authorization: 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
         }
