@@ -14,7 +14,7 @@
 
 export const onRequest = (event) => {
   console.log(`incoming request for ${event.requestMeta.url.pathname}`)
-  console.log(event, `incoming event for ${event.requestMeta.url.pathname}`)
-  console.log(event.context, `incoming event.context for ${event.requestMeta.url.pathname}`)
+  console.log(event.body, `incoming event body for ${event.requestMeta.url.pathname}`)
+  console.log(event.requestMeta, `incoming event requestMeta for ${event.requestMeta.url.pathname}`)
   // console.log(buildResponseCacheKey(event), `buildResponseCacheKey for ${event.requestMeta.url.pathname}`)
 }
