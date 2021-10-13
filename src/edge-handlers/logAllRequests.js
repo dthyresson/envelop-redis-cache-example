@@ -1,3 +1,6 @@
+import { envelop } from '@envelop/core'
+import { getGraphQLParameters } from 'graphql-helix'
+
 // import jsonStableStringify from 'fast-json-stable-stringify'
 
 // const crypto = require('crypto')
@@ -13,8 +16,25 @@
 // ].join('|')).digest('base64')
 
 export const onRequest = (event) => {
+  const getEnveloped = envelop({})
+
+  const { contextFactory } = getEnveloped({
+    req: event,
+  })
+
+  const request = {
+    body: JSON.parse(event.body),
+    headers: event.requestMeta.headers,
+    method: event.requestMeta.method,
+    query: event.requestMeta.url,
+  }
+
+  const { operationName, query, variables } = getGraphQLParameters(request)
+
   console.log(`incoming request for ${event.requestMeta.url.pathname}`)
-  console.log(event.body, `incoming event body for ${event.requestMeta.url.pathname}`)
-  console.log(event.requestMeta, `incoming event requestMeta for ${event.requestMeta.url.pathname}`)
+  console.log({ operationName, query, variables }, `incoming request for ${event.requestMeta.url.pathname}`)
+
+  console.log(contextFactory?.documentString, `incoming contextFactory for ${event.requestMeta.url.pathname}`)
+
   // console.log(buildResponseCacheKey(event), `buildResponseCacheKey for ${event.requestMeta.url.pathname}`)
 }

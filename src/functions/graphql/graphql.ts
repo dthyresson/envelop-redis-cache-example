@@ -114,6 +114,7 @@ const getEnveloped = envelop({
 
 // The function handler is our serverless GraphQL "server"
 export const handler: Handler = async (event) => {
+  console.log(event)
   const { parse, validate, contextFactory, execute, schema } = getEnveloped({
     req: event,
   })
