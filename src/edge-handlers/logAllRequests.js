@@ -1,16 +1,16 @@
-import jsonStableStringify from 'fast-json-stable-stringify'
+// import jsonStableStringify from 'fast-json-stable-stringify'
 
-const crypto = require('crypto')
+// const crypto = require('crypto')
 
 /**
  * Default function used for building the response cache key.
  * It is exported here for advanced use-cases. E.g. if you want to short circuit and serve responses from the cache on a global level in order to completely by-pass the GraphQL flow.
  */
-const buildResponseCacheKey = params => crypto.createHash('sha1').update([params.documentString,
-  params.operationName ?? '',
-  jsonStableStringify(params.variableValues ?? {}),
-  params.sessionId ?? '',
-].join('|')).digest('base64')
+// const buildResponseCacheKey = params => crypto.createHash('sha1').update([params.documentString,
+//   params.operationName ?? '',
+//   jsonStableStringify(params.variableValues ?? {}),
+//   params.sessionId ?? '',
+// ].join('|')).digest('base64')
 
 export const onRequest = (event) => {
   console.log(`incoming request for ${event.requestMeta.url.pathname}`)
@@ -66,7 +66,7 @@ export const onRequest = (event) => {
 
     console.log({ params }, `GraphQL Parameters for ${event.requestMeta.url.pathname}`)
 
-    const cacheKey = buildResponseCacheKey(params)
+    const cacheKey = 'TODO' // buildResponseCacheKey(params)
 
     console.log(cacheKey, `cacheKey for ${event.requestMeta.url.pathname}`)
 
