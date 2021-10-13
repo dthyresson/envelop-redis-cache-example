@@ -1,3 +1,5 @@
+import SHA1 from 'crypto-js/sha1'
+import Base64 from 'crypto-js/enc-base64'
 import jsonStableStringify from 'fast-json-stable-stringify'
 
 /**
@@ -12,7 +14,6 @@ import jsonStableStringify from 'fast-json-stable-stringify'
 
 // const { createHash } = import('crypto')
 
-const crypto = require('crypto')
 
 const buildResponseCacheKey = (params) => {
   console.debug({ params }, 'buildResponseCacheKey params')
@@ -25,7 +26,7 @@ const buildResponseCacheKey = (params) => {
 
   console.debug({ tokens }, 'buildResponseCacheKey tokens')
 
-  return crypto.createHash('sha1').update(tokens).digest('base64')
+  return Base64.stringify(SHA1(tokens))
 }
 
 export const onRequest = (event) => {

@@ -17,6 +17,7 @@
     "@graphql-tools/schema": "^8.2.0",
     "@netlify/functions": "^0.7.2",
     "@types/node": "^14.17.20",
+    "crypto-js": "^4.1.1",
     "date-fns": "^2.24.0",
     "delay": "^5.0.0",
     "fast-json-stable-stringify": "^2.1.0",
