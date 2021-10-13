@@ -77,7 +77,8 @@ export const onRequest = (event) => {
       const cacheKey = buildResponseCacheKey(params)
       console.debug(cacheKey, `cacheKey for ${event.requestMeta.url.pathname}`)
     } catch (error) {
-      console.error(error)
+      console.error(error, 'Failed to make cache key')
+      console.error(error.message)
     }
 
     return fetch(url, { body: payload.body, headers: payload.headers, method: 'POST' })
