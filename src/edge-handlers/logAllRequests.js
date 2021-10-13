@@ -19,12 +19,15 @@ export const onRequest = (event) => {
   console.log(`incoming request for ${event.requestMeta.url.pathname}`)
 
   event.replaceResponse(({ request }) => {
+    const rawBody = request.body
+    const decoder = new TextDecoder()
+    const body = decoder.decode(rawBody, { stream: true })
     const url = new URL(request.url)
 
     console.log(url, `url for ${event.requestMeta.url.pathname}`)
 
     const payload = {
-      body: request?.body,
+      body,
       headers: event.requestMeta.headers,
       method: event.requestMeta.method,
       query: event.requestMeta.url,
@@ -32,7 +35,7 @@ export const onRequest = (event) => {
     console.log(payload, `payload for ${event.requestMeta.url.pathname}`)
 
     // url.pathname = `/api/v1/${url.pathname}`
-    return fetch(url, { body: payload.body, method: 'POST' })
+    return fetch(url, { body: payload.body, headers: payload.headers, method: 'POST' })
   })
 
   // event.replaceResponse({ request } => {
