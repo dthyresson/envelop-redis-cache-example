@@ -3,7 +3,7 @@ import Base64 from 'crypto-js/enc-base64'
 import jsonStableStringify from 'fast-json-stable-stringify'
 import Redis from 'ioredis'
 
-const redis = new Redis(process.env.REDIS)
+const redis = new Redis('rediss://:cb3cc740a421404b8a27474f061e6150@us1-sweet-anteater-34871.upstash.io:34871')
 
 /**
  * Default function used for building the response cache key.
