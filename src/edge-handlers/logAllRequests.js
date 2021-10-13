@@ -19,12 +19,12 @@ export const onRequest = (event) => {
   console.log(`incoming request for ${event.requestMeta.url.pathname}`)
 
   event.replaceResponse(({ request }) => {
+    console.log(request.url, `url for ${event.requestMeta.url.pathname}`)
+
     const rawBody = request.body
     const decoder = new TextDecoder()
-    const body = decoder.decode(rawBody, { stream: true })
+    const body = decoder.decode(rawBody)
     const url = new URL(request.url)
-
-    console.log(url, `url for ${event.requestMeta.url.pathname}`)
 
     const payload = {
       body,
