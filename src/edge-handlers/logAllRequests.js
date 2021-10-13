@@ -32,7 +32,7 @@ export const onRequest = (event) => {
     console.log(payload, `payload for ${event.requestMeta.url.pathname}`)
 
     // url.pathname = `/api/v1/${url.pathname}`
-    return fetch(url, { body: request.body })
+    return fetch(url, { body: request.body, method: 'POST' })
   })
 
   // event.replaceResponse({ request } => {
