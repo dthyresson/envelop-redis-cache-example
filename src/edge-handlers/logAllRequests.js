@@ -73,7 +73,7 @@ export const onRequest = (event) => {
       console.debug(cacheKey, `cacheKey for ${event.requestMeta.url.pathname}`)
 
       // readonly redis fetch
-      fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
+      return fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
         headers: {
           Authorization: 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
         }
@@ -83,7 +83,7 @@ export const onRequest = (event) => {
 
           if (data?.result) {
             const r = data.result
-            console.debug(r, `+++ Found for for ${cacheKey}.`)
+            console.debug(r, `+++ Found for ${cacheKey}.`)
             return new Response(jsonStableStringify(r), { method: 'POST', status: '200' })
           } else {
             console.debug(`!!! No cachedResult found for ${cacheKey}. Make GraphQL request.`)
