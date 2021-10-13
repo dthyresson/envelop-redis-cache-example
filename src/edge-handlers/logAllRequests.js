@@ -51,9 +51,10 @@ export const onRequest = (event) => {
     }
 
     if (event.requestMeta.method === 'POST') {
-      params.operationName = body?.operationName
-      params.documentString = body?.query
-      params.variableValues = body?.variables
+      const req = JSON.parse(body)
+      params.operationName = req?.operationName
+      params.documentString = req?.query
+      params.variableValues = req?.variables
     }
 
     const payload = {
