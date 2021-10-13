@@ -12,5 +12,5 @@
   directory = "src/functions/"    
 
 [[edge_handlers]]
-  path = "/*"
+  path = "/.netlify/functions/graphql"
   handler = "logAllRequests"
