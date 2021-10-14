@@ -7,101 +7,103 @@ import jsonStableStringify from 'fast-json-stable-stringify'
  * It is exported here for advanced use-cases. E.g. if you want to short circuit and serve responses from the cache on a global level in order to completely by-pass the GraphQL flow.
  */
 const buildResponseCacheKey = (params) => {
-  console.debug({ params }, 'buildResponseCacheKey params')
-
   const tokens = [params.documentString,
     params.operationName ?? '',
     jsonStableStringify(params.variableValues ?? {}),
     params.sessionId ?? '',
   ].join('|')
 
-  console.debug({ tokens }, 'buildResponseCacheKey tokens')
-
   return Base64.stringify(SHA1(tokens))
 }
 
+const requestBody = async (request) => {
+  const rawBody = request.body
+  const decoder = new TextDecoder()
+  let read = true
+  let body = ''
+  const reader = rawBody.getReader()
+
+  while (read) {
+    const chunk = await reader.read()
+
+    if (!chunk.done) {
+      body += decoder.decode(chunk.value)
+    } else {
+      read = false
+    }
+  }
+
+  body += decoder.decode()
+
+  return body
+}
+
+const getGraphQLParameters = (body) => {
+  const params = {
+    documentString: undefined,
+    operationName: undefined,
+    variableValues: undefined,
+    sessionId: undefined
+  }
+
+  if (event.requestMeta.method === 'POST') {
+    const req = JSON.parse(body)
+    params.operationName = req?.operationName
+    params.documentString = req?.query
+    params.variableValues = req?.variables
+  }
+
+  return params
+}
+
 export const onRequest = (event) => {
-  console.info(`incoming request for ${event.requestMeta.url.pathname}`)
+  const requestPath = event.requestMeta.url.pathname
+  const headers = event.requestMeta.headers
 
-  event.replaceResponse(async ({ request }) => {
-    console.info(request.url, `url for ${event.requestMeta.url.pathname}`)
+  console.info(`incoming request for ${requestPath}`)
 
-    const rawBody = request.body
-    const decoder = new TextDecoder()
-    let read = true
-    let body = ''
-    const reader = rawBody.getReader()
+  console.info({ headers }, `incoming request for ${requestPath}`)
 
-    while (read) {
-      const chunk = await reader.read()
+  if (headers.cacheType === 'responseEdgeCache') {
+    event.replaceResponse(async ({ request }) => {
+      const body = await requestBody(request)
+      const params = getGraphQLParameters(body)
 
-      if (!chunk.done) {
-        console.debug('trying to decode...')
-        body += decoder.decode(chunk.value)
-      } else {
-        read = false
-      }
-    }
+      try {
+        const cacheKey = buildResponseCacheKey(params)
+        console.debug(cacheKey, `cacheKey for ${requestPath}`)
 
-    body += decoder.decode()
-
-    const url = new URL(request.url)
-
-    const params = {
-      documentString: undefined,
-      operationName: undefined,
-      variableValues: undefined,
-      sessionId: undefined
-    }
-
-    if (event.requestMeta.method === 'POST') {
-      const req = JSON.parse(body)
-      params.operationName = req?.operationName
-      params.documentString = req?.query
-      params.variableValues = req?.variables
-    }
-
-    const payload = {
-      body,
-      headers: event.requestMeta.headers,
-      method: event.requestMeta.method,
-      query: event.requestMeta.url,
-    }
-
-    try {
-      const cacheKey = buildResponseCacheKey(params)
-      console.debug(cacheKey, `cacheKey for ${event.requestMeta.url.pathname}`)
-
-      // readonly redis fetch
-      return fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
-        headers: {
-          Authorization: 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
-        }
-      }).then(response => response.json())
-        .then(data => {
-          console.debug(data, `cachedResult for ${cacheKey}`)
-
-          if (data?.result) {
-            const r = JSON.parse(data.result)
-            const responseResult = {
-              ...r,
-              extensions: {
-                responseEdgeCache: {
-                  hit: true
+        // readonly redis fetch
+        return fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
+          headers: {
+            Authorization: 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
+          }
+        }).then(response => response.json())
+          .then(data => {
+            if (data?.result) {
+              const parsedResult = JSON.parse(data.result)
+              const responseResult = {
+                ...parsedResult,
+                extensions: {
+                  responseEdgeCache: {
+                    hit: true
+                  }
                 }
               }
-            }
 
-            console.debug(jsonStableStringify(responseResult), `+++ Found for ${cacheKey}.`)
-            return new Response(jsonStableStringify(responseResult), { method: 'POST', status: 200 })
-          } else {
-            console.debug(`!!! No cachedResult found for ${cacheKey}. Make GraphQL request.`)
-            return fetch(url, { body: payload.body, headers: payload.headers, method: 'POST' })
-          }
-        })
-    } catch (error) {
-      console.error(error, 'Failed to make cache key')
-      console.error(error.message)
-    }
-  })
+              console.debug(jsonStableStringify(responseResult), `+++ Found for ${cacheKey}.`)
+
+              return new Response(jsonStableStringify(responseResult), { headers, method: 'POST', status: 200 })
+            } else {
+              console.debug(`!!! No cachedResult found for ${cacheKey}. Forward to GraphQL request.`)
+
+              return fetch(request.url, { body: body, headers, method: 'POST', status: 200 })
+            }
+          })
+      } catch (error) {
+        console.error(error, 'Failed to make cache key')
+        console.error(error.message)
+      }
+    })
+  }
 }
