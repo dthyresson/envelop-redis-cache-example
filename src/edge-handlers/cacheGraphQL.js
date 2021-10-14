@@ -95,11 +95,11 @@ export const onRequest = (event) => {
 
               console.debug(jsonStableStringify(responseResult), `+++ Found for ${cacheKey}.`)
 
-              return new Response(jsonStableStringify(responseResult), { method, headers: { cacheKey }, status: 200 })
+              return new Response(jsonStableStringify(responseResult), { method: 'POST', headers: { cacheKey }, status: 200 })
             } else {
-              console.debug(`!!! No cachedResult found for ${cacheKey}. Forward to GraphQL request.`)
+              console.debug(body, `!!! No cachedResult found for ${cacheKey}. Forward body to GraphQL request.`)
 
-              return fetch(request.url, { body: body, method, status: 200 })
+              return fetch(request.url, { body: body, method: 'POST', status: 200 })
             }
           })
       } catch (error) {
