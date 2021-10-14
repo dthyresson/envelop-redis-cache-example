@@ -62,9 +62,9 @@ export const onRequest = (event) => {
 
   console.info(`incoming request for ${requestPath}`)
 
-  console.info({ headers }, `incoming request for ${requestPath}`)
+  console.info(headers, `incoming request for ${requestPath}`)
 
-  if (headers.cacheType === 'responseEdgeCache') {
+  if (headers['response-cache-type'] === 'responseEdgeCache') {
     event.replaceResponse(async ({ request }) => {
       const body = await requestBody(request)
       const params = getGraphQLParameters(body)
