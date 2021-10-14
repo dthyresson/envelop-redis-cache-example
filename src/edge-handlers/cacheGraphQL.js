@@ -6,7 +6,6 @@ const REDIS_READONLY = 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzN
 
 /**
  * Default function used for building the response cache key.
- * It is exported here for advanced use-cases. E.g. if you want to short circuit and serve responses from the cache on a global level in order to completely by-pass the GraphQL flow.
  */
 const buildResponseCacheKey = (params) => {
   const tokens = [params.documentString,
@@ -18,6 +17,13 @@ const buildResponseCacheKey = (params) => {
   return Base64.stringify(SHA1(tokens))
 }
 
+/**
+ * In an Edge Handler, the request body is not readily available to reduce size and latency.
+ * In order to fetch the body, you need th read and decode it from a stream.
+ *
+ * @param {*} request
+ * @returns the request body as a string
+ */
 const requestBody = async (request) => {
   const rawBody = request.body
   const decoder = new TextDecoder()
@@ -40,23 +46,29 @@ const requestBody = async (request) => {
   return body
 }
 
+/**
+ * Extracts GraphQL parameters from a request body: documentString, operationName, variableValues.
+ * Doesn't handle auth/sessions.
+ *
+ * @param {*} body
+ * @returns params
+ */
 const getGraphQLParameters = (body) => {
-  const params = {
-    documentString: undefined,
-    operationName: undefined,
-    variableValues: undefined,
+  const parsedBody = JSON.parse(body)
+
+  return {
+    documentString: parsedBody?.query,
+    operationName: parsedBody?.operationName,
+    variableValues: parsedBody?.variables,
     sessionId: undefined
   }
-
-  const req = JSON.parse(body)
-
-  params.operationName = req?.operationName
-  params.documentString = req?.query
-  params.variableValues = req?.variables
-
-  return params
 }
 
+/**
+ * Fetches a cached GraphQL execution result if present, otherwise pass through to the GraphQL serverless function
+ *
+ * @param {*} event
+ */
 export const onRequest = (event) => {
   const requestPath = event.requestMeta.url.pathname
   const method = event.requestMeta.method
