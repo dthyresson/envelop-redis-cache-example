@@ -60,7 +60,7 @@ const getGraphQLParameters = (body) => {
 
 export const onRequest = (event) => {
   const requestPath = event.requestMeta.url.pathname
-  const headers = event.requestMeta.headers()
+  const headers = event.requestMeta.headers
 
   console.info(`incoming request for ${requestPath}`)
 
