@@ -112,15 +112,26 @@ const getEnveloped = envelop({
   enableInternalTracing: true,
 })
 
+/**
+ * Extracts and parses body payload from event with base64 encoding check
+ *
+ */
+const parseEventBody = (event) => {
+  if (event.isBase64Encoded) {
+    return JSON.parse(Buffer.from(event.body || '', 'base64').toString('utf-8'))
+  } else {
+    return event.body && JSON.parse(event.body)
+  }
+}
+
 // The function handler is our serverless GraphQL "server"
 export const handler: Handler = async (event) => {
-  console.log(event)
   const { parse, validate, contextFactory, execute, schema } = getEnveloped({
     req: event,
   })
 
   const request = {
-    body: JSON.parse(event.body),
+    body: parseEventBody(event),
     headers: event.headers,
     method: event.httpMethod,
     query: event.queryStringParameters,
