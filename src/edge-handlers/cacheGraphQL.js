@@ -48,25 +48,25 @@ const getGraphQLParameters = (body) => {
     sessionId: undefined
   }
 
-  if (event.requestMeta.method === 'POST') {
-    const req = JSON.parse(body)
-    params.operationName = req?.operationName
-    params.documentString = req?.query
-    params.variableValues = req?.variables
-  }
+  const req = JSON.parse(body)
+
+  params.operationName = req?.operationName
+  params.documentString = req?.query
+  params.variableValues = req?.variables
 
   return params
 }
 
 export const onRequest = (event) => {
   const requestPath = event.requestMeta.url.pathname
+  const method = event.requestMeta.method
   const cacheType = event.requestMeta.headers.get('Response-Cache-Type')
 
   console.info(`incoming request for ${requestPath}`)
 
   console.info(cacheType, `cacheType for ${requestPath}`)
 
-  if (cacheType === 'responseEdgeCache') {
+  if (method === 'POST' && cacheType === 'responseEdgeCache') {
     event.replaceResponse(async ({ request }) => {
       const body = await requestBody(request)
       const params = getGraphQLParameters(body)
@@ -95,11 +95,11 @@ export const onRequest = (event) => {
 
               console.debug(jsonStableStringify(responseResult), `+++ Found for ${cacheKey}.`)
 
-              return new Response(jsonStableStringify(responseResult), { headers, method: 'POST', status: 200 })
+              return new Response(jsonStableStringify(responseResult), { method, headers: { cacheKey }, status: 200 })
             } else {
               console.debug(`!!! No cachedResult found for ${cacheKey}. Forward to GraphQL request.`)
 
-              return fetch(request.url, { body: body, headers, method: 'POST', status: 200 })
+              return fetch(request.url, { body: body, method, status: 200 })
             }
           })
       } catch (error) {
