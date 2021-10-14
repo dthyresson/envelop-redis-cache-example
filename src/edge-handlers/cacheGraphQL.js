@@ -2,6 +2,8 @@ import SHA1 from 'crypto-js/sha1'
 import Base64 from 'crypto-js/enc-base64'
 import jsonStableStringify from 'fast-json-stable-stringify'
 
+const REDIS_READONLY = 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
+
 /**
  * Default function used for building the response cache key.
  * It is exported here for advanced use-cases. E.g. if you want to short circuit and serve responses from the cache on a global level in order to completely by-pass the GraphQL flow.
@@ -58,7 +60,7 @@ const getGraphQLParameters = (body) => {
 
 export const onRequest = (event) => {
   const requestPath = event.requestMeta.url.pathname
-  const headers = event.headers
+  const headers = event.requestMeta.headers()
 
   console.info(`incoming request for ${requestPath}`)
 
@@ -76,7 +78,7 @@ export const onRequest = (event) => {
         // readonly redis fetch
         return fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
           headers: {
-            Authorization: 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
+            Authorization: REDIS_READONLY
           }
         }).then(response => response.json())
           .then(data => {
