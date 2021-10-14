@@ -99,7 +99,7 @@ export const onRequest = (event) => {
             } else {
               console.debug(`!!! No cachedResult found for ${cacheKey}. Forward to GraphQL request.`)
 
-              return fetch(request.url, { body: jsonStableStringify(body), method, status: 200 })
+              return fetch(request.url, { body, method, status: 200 })
             }
           })
       } catch (error) {
