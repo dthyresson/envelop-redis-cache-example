@@ -58,11 +58,11 @@ const getGraphQLParameters = (body) => {
 
 export const onRequest = (event) => {
   const requestPath = event.requestMeta.url.pathname
-  const headers = event.requestMeta.headers
+  const headers = event.headers
 
   console.info(`incoming request for ${requestPath}`)
 
-  console.info(headers, `incoming request for ${requestPath}`)
+  console.info(headers, `headers for ${requestPath}`)
 
   if (headers['response-cache-type'] === 'responseEdgeCache') {
     event.replaceResponse(async ({ request }) => {
