@@ -2,13 +2,15 @@ import SHA1 from 'crypto-js/sha1'
 import Base64 from 'crypto-js/enc-base64'
 import jsonStableStringify from 'fast-json-stable-stringify'
 
-const REDIS_READONLY = 'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
+const REDIS_READONLY =
+  'Bearer Aog3ASQgYjU1YjU4YTktMWNjMy00MWI5LWJlNmEtMjE2YjEzNjMyNDcxtg-L28D3MZWzU0PhivQgG4kTbI1gCSnVCEkW5m9ho6c='
 
 /**
  * Default function used for building the response cache key.
  */
 const buildResponseCacheKey = (params) => {
-  const tokens = [params.documentString,
+  const tokens = [
+    params.documentString,
     params.operationName ?? '',
     jsonStableStringify(params.variableValues ?? {}),
     params.sessionId ?? '',
@@ -60,7 +62,7 @@ const getGraphQLParameters = (body) => {
     documentString: parsedBody?.query,
     operationName: parsedBody?.operationName,
     variableValues: parsedBody?.variables,
-    sessionId: undefined
+    sessionId: undefined,
   }
 }
 
@@ -88,30 +90,48 @@ export const onRequest = (event) => {
         console.debug(cacheKey, `cacheKey for ${requestPath}`)
 
         // readonly redis fetch
-        return fetch(`https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`, {
-          headers: {
-            Authorization: REDIS_READONLY
+        return fetch(
+          `https://us1-sweet-anteater-34871.upstash.io/get/${cacheKey}`,
+          {
+            headers: {
+              Authorization: REDIS_READONLY,
+            },
           }
-        }).then(response => response.json())
-          .then(data => {
+        )
+          .then((response) => response.json())
+          .then((data) => {
             if (data?.result) {
               const parsedResult = JSON.parse(data.result)
               const responseResult = {
                 ...parsedResult,
                 extensions: {
                   responseEdgeCache: {
-                    hit: true
-                  }
-                }
+                    hit: true,
+                  },
+                },
               }
 
-              console.debug(jsonStableStringify(responseResult), `+++ Found for ${cacheKey}.`)
+              console.debug(
+                jsonStableStringify(responseResult),
+                `+++ Found for ${cacheKey}.`
+              )
 
-              return new Response(jsonStableStringify(responseResult), { method: 'POST', headers: { cacheKey }, status: 200 })
+              return new Response(jsonStableStringify(responseResult), {
+                method: 'POST',
+                headers: { cacheKey },
+                status: 200,
+              })
             } else {
-              console.debug(body, `!!! No cachedResult found for ${cacheKey}. Forward body to GraphQL request.`)
+              console.debug(
+                body,
+                `!!! No cachedResult found for ${cacheKey}. Forward body to GraphQL request.`
+              )
 
-              return fetch(request.url, { body: body, method: 'POST', status: 200 })
+              return fetch(request.url, {
+                body: body,
+                method: 'POST',
+                status: 200,
+              })
             }
           })
       } catch (error) {

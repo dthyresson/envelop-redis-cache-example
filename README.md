@@ -36,3 +36,9 @@
 Currently, ttl for all cached is 10secs.
 
 TODO invalidate key and or on mutation
+
+## Benchmarks
+
+```
+brew install k6
+```

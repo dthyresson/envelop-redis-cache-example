@@ -3,7 +3,12 @@
     "browser": true,
     "es2021": true
   },
-  "extends": ["standard"],
+  "extends": [
+    "eslint:recommended",
+    "standard",
+    "prettier",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "ignorePatterns": ["**/.netlify/**/*"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
