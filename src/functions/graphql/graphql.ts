@@ -34,8 +34,8 @@ const schema = makeExecutableSchema({
     }
 
     type Query {
-      post(id: Int!): Post!,
-      posts: [Post]!,
+      post(id: Int!): Post!
+      posts: [Post]!
       hi: String!
       fast: String!
       quick: String!
@@ -77,7 +77,11 @@ const schema = makeExecutableSchema({
     },
     Mutation: {
       updatePost: async (_, { id, input }) => {
-        return { id: id, title: `${input.title || 'title'}${id}`, body: `${input.body || 'body'}${id}` }
+        return {
+          id: id,
+          title: `${input.title || 'title'}${id}`,
+          body: `${input.body || 'body'}${id}`,
+        }
       },
 
       invalidatePost: async (_, { id }) => {
@@ -88,7 +92,16 @@ const schema = makeExecutableSchema({
   },
 })
 
-const EXPIRE_IN_SECONDS = 300
+const EXPIRE_IN_SECONDS =
+  (process.env.EXPIRE_IN_SECONDS && parseInt(process.env.EXPIRE_IN_SECONDS)) ||
+  30
+
+const enableCache = (context) => {
+  const enabled = context.request.headers['enable-response-cache']
+  if (enabled && enabled === 'true') return true
+  if (enabled && enabled !== 'true') return false
+  return true
+}
 
 // Setup envelop and useful plugins like logging and adding timing traces
 const getEnveloped = envelop({
@@ -97,6 +110,7 @@ const getEnveloped = envelop({
     useLogger(),
     useTiming(),
     useResponseCache({
+      enabled: (context) => enableCache(context),
       cache,
       ttl: EXPIRE_IN_SECONDS * 1000,
       includeExtensionMetadata: true,
