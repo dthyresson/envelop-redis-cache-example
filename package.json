@@ -9,7 +9,7 @@
     "dev": "netlify dev",
     "pretty": "yarn prettier --write .",
     "serve": "netlify build && netlify dev",
-    "benchmark": "k6 run -e BENCHMARK_GRAPHQL_ENDPOINT=https://serverless-graphql-redis-cache.netlify.app/.netlify/functions/graphql ./benchmark/k6.js"
+    "benchmark": "k6 run -e BENCHMARK_GRAPHQL_ENDPOINT=your_endpoint ./benchmark/k6.js"
   },
   "dependencies": {
     "@envelop/core": "^1.2.0",

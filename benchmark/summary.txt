@@ -1,4 +1,0 @@
-     data_received...: 11 kB  7.4 kB/s
-     data_sent.......: 3.3 kB 2.1 kB/s
-     vus.............: 4      min=4    max=4
-     vus_max.........: 8      min=8    max=8
